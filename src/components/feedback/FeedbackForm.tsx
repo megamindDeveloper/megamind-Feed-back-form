@@ -615,7 +615,7 @@ export function FeedbackForm() {
                 className="py-6 px-8 text-base"
               >
                 {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Send className="mr-2 h-5 w-5" />}
-                Submit Feedback
+                Submit
               </Button>
             )}
           </CardFooter>
