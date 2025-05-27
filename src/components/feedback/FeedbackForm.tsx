@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image"; // Added Image import
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { 
@@ -194,6 +195,16 @@ export function FeedbackForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardHeader className="pb-8 pt-8">
+            <div className="flex justify-center mb-6">
+              <Image
+                src="https://placehold.co/200x50.png"
+                alt="Megamind Logo"
+                width={200}
+                height={50}
+                data-ai-hint="megamind logo"
+                priority // Optional: if logo is critical for LCP
+              />
+            </div>
             <CardTitle className="text-4xl font-extrabold text-center text-primary tracking-tight">Feedback for Megamind</CardTitle>
             <CardDescription className="text-center text-muted-foreground text-lg pt-1">
               Your insights help us grow. Please take a few moments to share your experience.
