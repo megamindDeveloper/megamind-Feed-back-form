@@ -124,7 +124,7 @@ export function FeedbackForm() {
       isValid = await form.trigger(["overallExperience", "impactAssessment", "qualityOfService", "deliveryTime"]);
     } else if (currentStep === 3) {
       const serviceFieldsToTrigger: ServiceOptionField[] = SERVICE_OPTIONS.map(s => s.id) as ServiceOptionField[];
-      serviceFieldsToTrigger.push("services_other_detail" as ServiceOptionField); // Cast because it's not in SERVICE_OPTIONS
+      serviceFieldsToTrigger.push("services_other_detail" as ServiceOptionField); 
       isValid = await form.trigger([
         "brandStrategyAlignment", 
         ...serviceFieldsToTrigger, 
@@ -142,6 +142,13 @@ export function FeedbackForm() {
       if (currentStep < TOTAL_STEPS) {
         setCurrentStep((prev) => prev + 1);
       }
+    } else {
+        // Optional: scroll to the first error
+        const firstErrorField = Object.keys(form.formState.errors)[0] as keyof FeedbackFormData;
+        if (firstErrorField) {
+            const element = document.getElementsByName(firstErrorField)[0];
+            element?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
     }
   };
 
@@ -168,7 +175,7 @@ export function FeedbackForm() {
     <RadioGroup
       onValueChange={field.onChange}
       defaultValue={field.value}
-      className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4"
+      className="flex flex-col space-y-2 pt-1 sm:flex-row sm:space-y-0 sm:space-x-4"
     >
       {options.map((option) => (
         <FormItem key={option} className="flex items-center space-x-2 space-y-0">
@@ -183,20 +190,20 @@ export function FeedbackForm() {
   );
 
   return (
-    <Card className="w-full shadow-xl animate-in fade-in duration-500">
+    <Card className="w-full shadow-2xl animate-in fade-in duration-500 border-border/60">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold text-center">Feedback for Megamind</CardTitle>
-            <CardDescription className="text-center text-md">
-              Your feedback is valuable to us. Please answer the following questions.
+          <CardHeader className="pb-8 pt-8">
+            <CardTitle className="text-4xl font-extrabold text-center text-primary tracking-tight">Feedback for Megamind</CardTitle>
+            <CardDescription className="text-center text-muted-foreground text-lg pt-1">
+              Your insights help us grow. Please take a few moments to share your experience.
             </CardDescription>
-            <div className="pt-4">
+            <div className="pt-6">
               <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-8 min-h-[400px] max-h-[60vh] overflow-y-auto p-6 pr-3">
+          <CardContent className="space-y-6 min-h-[420px] max-h-[65vh] overflow-y-auto p-8 pr-5">
             {/* Step 1: Organisation Info */}
             {currentStep === 1 && (
               <div className="animate-in fade-in duration-300 space-y-6">
@@ -205,8 +212,8 @@ export function FeedbackForm() {
                   name="organizationName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>1. Organisation Name *</FormLabel>
-                      <FormControl><Input placeholder="Your company's name" {...field} /></FormControl>
+                      <FormLabel className="text-base mt-2">1. Organisation Name *</FormLabel>
+                      <FormControl><Input placeholder="Your company's name" {...field} className="text-base py-5" /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -216,8 +223,8 @@ export function FeedbackForm() {
                   name="personName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>2. Name of the person *</FormLabel>
-                      <FormControl><Input placeholder="Your full name" {...field} /></FormControl>
+                      <FormLabel className="text-base mt-2">2. Name of the person *</FormLabel>
+                      <FormControl><Input placeholder="Your full name" {...field} className="text-base py-5"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -227,11 +234,11 @@ export function FeedbackForm() {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>3. Position/Role in the Organisation *</FormLabel>
+                      <FormLabel className="text-base mt-2">3. Position/Role in the Organisation *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Select your role" /></SelectTrigger></FormControl>
+                        <FormControl><SelectTrigger className="text-base py-5"><SelectValue placeholder="Select your role" /></SelectTrigger></FormControl>
                         <SelectContent>
-                          {ROLE_OPTIONS.map(option => <SelectItem key={option} value={option}>{option}</SelectItem>)}
+                          {ROLE_OPTIONS.map(option => <SelectItem key={option} value={option} className="text-base">{option}</SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -243,9 +250,9 @@ export function FeedbackForm() {
                     control={form.control}
                     name="otherRole"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Please specify your role *</FormLabel>
-                        <FormControl><Input placeholder="Your specific role" {...field} /></FormControl>
+                      <FormItem className="mt-4">
+                        <FormLabel className="text-base">Please specify your role *</FormLabel>
+                        <FormControl><Input placeholder="Your specific role" {...field} className="text-base py-5"/></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -262,9 +269,9 @@ export function FeedbackForm() {
                   name="overallExperience"
                   render={({ field }) => (
                     <FormItem className="flex flex-col items-start">
-                      <FormLabel>4. How would you rate your overall experience with Megamind? *</FormLabel>
+                      <FormLabel className="text-base mt-2">4. How would you rate your overall experience with Megamind? *</FormLabel>
                       <FormControl>
-                        <StarRating rating={field.value || 0} setRating={field.onChange} size={32} />
+                        <StarRating rating={field.value || 0} setRating={field.onChange} size={36} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -275,7 +282,7 @@ export function FeedbackForm() {
                   name="impactAssessment"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>5. How would you assess the impact and results of our services on your brand? *</FormLabel>
+                      <FormLabel className="text-base mt-2">5. How would you assess the impact and results of our services on your brand? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, IMPACT_ASSESSMENT_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -286,8 +293,8 @@ export function FeedbackForm() {
                   name="qualityOfService"
                   render={({ field }) => (
                     <FormItem className="flex flex-col items-start">
-                      <FormLabel>6. Quality of services provided *</FormLabel>
-                      <FormControl><StarRating rating={field.value || 0} setRating={field.onChange} size={32} /></FormControl>
+                      <FormLabel className="text-base mt-2">6. Quality of services provided *</FormLabel>
+                      <FormControl><StarRating rating={field.value || 0} setRating={field.onChange} size={36} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -297,8 +304,8 @@ export function FeedbackForm() {
                   name="deliveryTime"
                   render={({ field }) => (
                     <FormItem className="flex flex-col items-start">
-                      <FormLabel>7. Delivery Time of services *</FormLabel>
-                      <FormControl><StarRating rating={field.value || 0} setRating={field.onChange} size={32} /></FormControl>
+                      <FormLabel className="text-base mt-2">7. Delivery Time of services *</FormLabel>
+                      <FormControl><StarRating rating={field.value || 0} setRating={field.onChange} size={36} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -314,29 +321,30 @@ export function FeedbackForm() {
                   name="brandStrategyAlignment"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>8. How would you rate our Brand Strategy in terms of aligning with your business (1=Poor, 5=Excellent)? *</FormLabel>
+                      <FormLabel className="text-base mt-2">8. How would you rate our Brand Strategy in terms of aligning with your business (1=Poor, 5=Excellent)? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, RATING_SCALE_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormItem>
-                  <FormLabel>9. Which service(s) did we provide for you? *</FormLabel>
-                  <div className="space-y-2">
+                  <FormLabel className="text-base mt-2">9. Which service(s) did we provide for you? *</FormLabel>
+                  <div className="space-y-3 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
                     {SERVICE_OPTIONS.map((service) => (
                       <FormField
                         key={service.id}
                         control={form.control}
                         name={service.id as ServiceOptionField}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormItem className="flex flex-row items-center space-x-3 space-y-0 p-3 bg-secondary/50 rounded-md border border-border/30 hover:border-primary/50 transition-colors">
                             <FormControl>
                               <Checkbox
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
+                                className="h-5 w-5"
                               />
                             </FormControl>
-                            <FormLabel className="font-normal">{service.label}</FormLabel>
+                            <FormLabel className="font-normal text-base">{service.label}</FormLabel>
                           </FormItem>
                         )}
                       />
@@ -350,9 +358,9 @@ export function FeedbackForm() {
                     control={form.control}
                     name="services_other_detail"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Please specify other service(s) *</FormLabel>
-                        <FormControl><Input placeholder="Details for other service" {...field} /></FormControl>
+                      <FormItem className="mt-4">
+                        <FormLabel className="text-base">Please specify other service(s) *</FormLabel>
+                        <FormControl><Input placeholder="Details for other service" {...field} className="text-base py-5"/></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -363,7 +371,7 @@ export function FeedbackForm() {
                   name="businessGoalsAlignment"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>10. How well do our services align with your business goals this month (1=Poorly, 5=Perfectly)? *</FormLabel>
+                      <FormLabel className="text-base mt-2">10. How well do our services align with your business goals this month (1=Poorly, 5=Perfectly)? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, RATING_SCALE_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -374,7 +382,7 @@ export function FeedbackForm() {
                   name="deadlineAdherence"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>11. How would you rate our ability to meet deadlines this month (1=Poor, 5=Excellent)? *</FormLabel>
+                      <FormLabel className="text-base mt-2">11. How would you rate our ability to meet deadlines this month (1=Poor, 5=Excellent)? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, RATING_SCALE_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -391,7 +399,7 @@ export function FeedbackForm() {
                   name="feedbackIncorporation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>12. Do you feel your feedback and requests were understood and incorporated into the work? *</FormLabel>
+                      <FormLabel className="text-base mt-2">12. Do you feel your feedback and requests were understood and incorporated into the work? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, ["yes", "no"])}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -402,7 +410,7 @@ export function FeedbackForm() {
                   name="digitalMarketingResults"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>13. How would you rate our Digital Marketing services in driving measurable results for your business (1=Poor, 5=Excellent)? *</FormLabel>
+                      <FormLabel className="text-base mt-2">13. How would you rate our Digital Marketing services in driving measurable results for your business (1=Poor, 5=Excellent)? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, RATING_SCALE_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -413,7 +421,7 @@ export function FeedbackForm() {
                   name="contentCreationRating"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>14. How would you rate our Content Creation & Creative in representing your brand (1=Poor, 5=Excellent)? *</FormLabel>
+                      <FormLabel className="text-base mt-2">14. How would you rate our Content Creation & Creative in representing your brand (1=Poor, 5=Excellent)? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, RATING_SCALE_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -430,8 +438,8 @@ export function FeedbackForm() {
                   name="pleasantSurprises"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>15. Were there any deliverables that pleasantly surprised you? If so, we would love to know which ones and what made them stand out for you.</FormLabel>
-                      <FormControl><Textarea placeholder="Describe any pleasant surprises..." {...field} rows={3} /></FormControl>
+                      <FormLabel className="text-base mt-2">15. Were there any deliverables that pleasantly surprised you? If so, we would love to know which ones and what made them stand out for you.</FormLabel>
+                      <FormControl><Textarea placeholder="Describe any pleasant surprises..." {...field} rows={4} className="text-base py-3"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -441,7 +449,7 @@ export function FeedbackForm() {
                   name="teamResponseTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>16. How well did the team respond to your enquiries (1=Poorly, 5=Excellently)? *</FormLabel>
+                      <FormLabel className="text-base mt-2">16. How well did the team respond to your enquiries (1=Poorly, 5=Excellently)? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, RATING_SCALE_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -452,8 +460,8 @@ export function FeedbackForm() {
                   name="workingRelationship"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>17. How would you describe the overall working relationship with our team? (Please specify any areas where we fell short) *</FormLabel>
-                      <FormControl><Textarea placeholder="Describe your working relationship..." {...field} rows={4} /></FormControl>
+                      <FormLabel className="text-base mt-2">17. How would you describe the overall working relationship with our team? (Please specify any areas where we fell short) *</FormLabel>
+                      <FormControl><Textarea placeholder="Describe your working relationship..." {...field} rows={5} className="text-base py-3"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -463,8 +471,8 @@ export function FeedbackForm() {
                   name="futureServicesImprovements"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>18. Are there any additional services or improvements you would like to see in the coming months?</FormLabel>
-                      <FormControl><Textarea placeholder="Suggestions for future services or improvements..." {...field} rows={3} /></FormControl>
+                      <FormLabel className="text-base mt-2">18. Are there any additional services or improvements you would like to see in the coming months?</FormLabel>
+                      <FormControl><Textarea placeholder="Suggestions for future services or improvements..." {...field} rows={4} className="text-base py-3"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -480,7 +488,7 @@ export function FeedbackForm() {
                   name="likelihoodToContinue"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>19. How likely are you to continue using our service in the coming months? *</FormLabel>
+                      <FormLabel className="text-base mt-2">19. How likely are you to continue using our service in the coming months? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, LIKELIHOOD_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -491,7 +499,7 @@ export function FeedbackForm() {
                   name="likelihoodToRecommend"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>20. How likely are you to recommend Megamind to others? *</FormLabel>
+                      <FormLabel className="text-base mt-2">20. How likely are you to recommend Megamind to others? *</FormLabel>
                       <FormControl>{renderRadioGroup(field, LIKELIHOOD_OPTIONS)}</FormControl>
                       <FormMessage />
                     </FormItem>
@@ -502,8 +510,8 @@ export function FeedbackForm() {
                   name="otherComments"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>21. Any other comments or suggestions for improvement? *</FormLabel>
-                      <FormControl><Textarea placeholder="Your final thoughts..." {...field} rows={4} /></FormControl>
+                      <FormLabel className="text-base mt-2">21. Any other comments or suggestions for improvement? *</FormLabel>
+                      <FormControl><Textarea placeholder="Your final thoughts..." {...field} rows={5} className="text-base py-3"/></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -512,26 +520,27 @@ export function FeedbackForm() {
             )}
           </CardContent>
 
-          <CardFooter className="flex justify-between pt-8">
+          <CardFooter className="flex justify-between pt-8 pb-8 px-8">
             <Button
               type="button"
               variant="outline"
               onClick={handlePrevStep}
               disabled={currentStep === 1 || isLoading}
               size="lg"
+              className="py-6 px-6 text-base"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" /> Previous
+              <ArrowLeft className="mr-2 h-5 w-5" /> Previous
             </Button>
             {currentStep < TOTAL_STEPS ? (
-              <Button type="button" onClick={handleNextStep} disabled={isLoading} size="lg">
-                Next <ArrowRight className="ml-2 h-4 w-4" />
+              <Button type="button" onClick={handleNextStep} disabled={isLoading} size="lg" className="py-6 px-8 text-base">
+                Next <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             ) : (
-              <Button type="submit" disabled={isLoading || !form.formState.isDirty || (form.formState.isDirty && !form.formState.isValid)} size="lg">
+              <Button type="submit" disabled={isLoading || !form.formState.isDirty || (form.formState.isDirty && !form.formState.isValid)} size="lg" className="py-6 px-8 text-base">
                 {isLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 ) : (
-                  <Send className="mr-2 h-4 w-4" />
+                  <Send className="mr-2 h-5 w-5" />
                 )}
                 Submit Feedback
               </Button>
@@ -542,4 +551,3 @@ export function FeedbackForm() {
     </Card>
   );
 }
-
